@@ -1,4 +1,5 @@
-#version 8
+# Access the engine
+from convert_units_module import convert_units
 
 app_status = ""
 
@@ -8,27 +9,13 @@ while app_status != "e":
 
     from_input = input("Unit to Convert from: ")
     to_input = input("Unit to Convert to: ")
-    
-    sql_where = "WHERE ([convert_from] = '" + str(from_input) + "' OR [convert_from_short] = '" + str(from_input) + "') "\
-        "AND ([convert_to] = '" + str(to_input) + "' OR [convert_to_short] = '" + str(to_input) + "')"
-    
-    import sqlite3
-    db_path = "/Users/susulone/Ohjelmointi/ConverterApp/lengthConverter/unit_converter.db"
-    database_connection = sqlite3.connect(db_path)
-    database_cursor = database_connection.cursor()
 
-    database_cursor.execute("SELECT [factor] FROM [conversion_factors]" + sql_where + ";")
-    found_data = database_cursor.fetchall()
+    # Set up the engine installation
+    user_inputs = {"value_input" : value_input, "from_input" : from_input, "to_input" : to_input,}
+    conversion_outputs = dict()
 
-    if len(found_data) > 0:
-        conversion_factor = float(found_data[0][0])
-
-        conversion_value = float(value_input)
-        conversion_type = str(from_input) + "-" + str(to_input)
-        
-        print("{conv_type}: {conv_value:.2f}".format(conv_type = conversion_type, conv_value = conversion_value * conversion_factor))
-        
-    else:
-        print("Your inputs don't make any sence.")
+    # Call the engine
+    conversion_outputs = convert_units(user_inputs)
+    print(conversion_outputs["string_output"])
 
     app_status = input("Press any key to do another conversion or press 'e' to exit.")
